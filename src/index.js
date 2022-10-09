@@ -1,9 +1,10 @@
+
 const express = require("express");
 const cors = require("cors");
 const ProductController = require("./controllers/ProductsController");
 const CartController = require("./controllers/CartController");
 const { register, login } = require("./controllers/AuthController");
-const productRoutes = require("../Routes/ProductRoutes");
+const productRoutes = require("../routes/ProductRoutes");
 const app = express();
 
 app.use(cors());
