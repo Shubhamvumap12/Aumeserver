@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/UserModel");
+const otpGenerator = require('otp-generator')
+
 require("dotenv").config();
 
 const generateToken = (user) => {
@@ -50,4 +52,38 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const sendOtp = async (req, res) => {
+    try {
+      const { phone } = req.body;
+
+      if ( phone.length != 10) {
+        throw Error("Enter Valid Phone Number");
+      } else {
+        const user = User.findOne({phone: phone})
+        // if(user){
+        //   return res.status(400).send({error: "user already exists"});
+        // }
+        const accountSid = process.env.TWILIO_ACCOUNT_SID;
+        const authToken = process.env.TWILIO_AUTH_TOKEN;
+        const client = require('twilio')(accountSid, authToken);
+
+        const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, digits: true, lowerCaseAlphabets : false });
+        console.log(otp);
+        client.messages
+        .create({
+          body: 'Otp from Aume Home: '+ otp,
+          from: '++12138163583',
+          to: '+91'+phone
+        })
+        .then(message => console.log("message", message.sid));
+
+        res.status(200).send({otp})
+      }
+    } catch (err) {
+      let error = err.message;
+      res.status(400).json({ error: error });
+    }
+  }
+
+
+module.exports = { register, login, sendOtp };
