@@ -4,7 +4,7 @@ const ProductRoutes = require("./Routes/ProductRoutes")
 require("dotenv").config();
 
 
-const PORT = process.env.PORT || 8002;
+const PORT = process.env.PORT || 5001;
 const mongoose = require("mongoose");
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://vinay_applore_mongo:password1234@cluster0.fmnxsiz.mongodb.net/?retryWrites=true&w=majority";
@@ -14,7 +14,6 @@ mongoose
   .then((result) => {
     app.listen(PORT, () => {
       console.log("Application Started in Port " + PORT);
-      // console.log("whazzzapp")
     });
   })
   .catch((err) => console.log(err));
@@ -23,4 +22,5 @@ mongoose
 
 app.use("/api/auth", AuthRoutes);
 app.use("/api/product", ProductRoutes);
+
 

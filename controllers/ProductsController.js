@@ -36,12 +36,18 @@ const getProducts = async (req, res) => {
   try {
     console.log(req.body);
     let filters = [];
-    filters = Object.keys(req.body.filter).map((key)=>{
-      return {[key] : {$in: req.body.filter[key]}}
+    Object.keys(req.body.filter).map((key)=>{
+      if(req.body.filter[key].length > 0)
+      filters.push( {[key] : {$in: req.body.filter[key]}} )
     })
     console.log({filters});
+   
+    Object.keys(filters).map((key)=>{
+      console.log(key, filters[key])
+    })
+    // 
     // const filter = [
-    //   {own_type: {$in : req.body.own_type}},
+    //   // {own_type: {$in : req.body.own_type}},
     //   {location: {$in : req.body.location}},
     //   {bed: {$in : req.body.bed}},
     //   {property_type: {$in : req.body.property_type}},
@@ -49,9 +55,13 @@ const getProducts = async (req, res) => {
     //   {build_type: {$in : req.body.build_type}},
     //   // {sort: {$in: req.body.sort}}
     // ]
+    if(filters.length == 0){
+      filters = [
+       {own_type: {$in : ["Buy", "Rent"]}}
+]    }
 
     const sort = req.body.sort;
-    let ProductsData = await Product.find({$or: filters}).sort(sort);
+    let ProductsData = await Product.find({$and: filters}).sort(sort);
     return res.status(200).send(ProductsData);
   } catch (err) {
     console.log(err.message);

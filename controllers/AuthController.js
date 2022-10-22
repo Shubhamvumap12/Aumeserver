@@ -30,9 +30,14 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    let user = await User.findOne({ email: req.body.email }).populate({
-      path: "cart.items.productId",
-    });
+    let user =
+      (await User.findOne({ email: req.body.email }).populate({
+        path: "cart.items.productId",
+      })) ||
+      (await User.findOne({ phone: req.body.email }).populate({
+        path: "cart.items.productId",
+      }));
+    console.log(user);
 
     if (!user) {
       return res.status(400).send({ message: "Wrong Email or Password" });
@@ -60,9 +65,9 @@ const sendOtp = async (req, res) => {
         throw Error("Enter Valid Phone Number");
       } else {
         const user = User.findOne({phone: phone})
-        // if(user){
-        //   return res.status(400).send({error: "user already exists"});
-        // }
+        if(user){
+          return res.status(400).send({error: "user already exists"});
+        }
         const accountSid = process.env.TWILIO_ACCOUNT_SID;
         const authToken = process.env.TWILIO_AUTH_TOKEN;
         const client = require('twilio')(accountSid, authToken);

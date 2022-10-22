@@ -96,6 +96,10 @@ const productSchema = new mongoose.Schema(
     location:{
         type:String,
         required: 'Location is required'
+    },
+    gym:{
+        type:String,
+        required: 'Location is required'
     }
 },
   {
