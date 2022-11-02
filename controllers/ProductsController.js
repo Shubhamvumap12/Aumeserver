@@ -36,31 +36,25 @@ const getProducts = async (req, res) => {
   try {
     console.log(req.body);
     let filters = [];
+    console.log(typeof req.body.filter.price)
     Object.keys(req.body.filter).map((key)=>{
-      if(req.body.filter[key].length > 0)
+      if(typeof req.body.filter[key]!== 'string' && req.body.filter[key].length > 0)
       filters.push( {[key] : {$in: req.body.filter[key]}} )
     })
-    console.log({filters});
    
     Object.keys(filters).map((key)=>{
       console.log(key, filters[key])
     })
-    // 
-    // const filter = [
-    //   // {own_type: {$in : req.body.own_type}},
-    //   {location: {$in : req.body.location}},
-    //   {bed: {$in : req.body.bed}},
-    //   {property_type: {$in : req.body.property_type}},
-    //   {face_direction: {$in : req.body.build_type}},
-    //   {build_type: {$in : req.body.build_type}},
-    //   // {sort: {$in: req.body.sort}}
-    // ]
-    if(filters.length == 0){
-      filters = [
-       {own_type: {$in : ["Buy", "Rent"]}}
-]    }
+    if (filters.length == 0) {
+      filters = [{ own_type: { $in: ["Buy", "Rent"] } }];
+    }
+    filters.push({price: {$lte: req.body.filter.price}})
 
     const sort = req.body.sort;
+    console.log({filters});
+
+    
+    // await Product.updateMany({}, {$set: {property_type : 'residential'}})
     let ProductsData = await Product.find({$and: filters}).sort(sort);
     return res.status(200).send(ProductsData);
   } catch (err) {
