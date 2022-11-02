@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
@@ -20,6 +21,7 @@
     "morgan": "^1.10.0",
     "nodemon": "^2.0.20",
     "otp-generator": "^4.0.0",
+    "sendgrid": "^5.2.3",
     "start": "^5.1.0",
     "twilio": "^3.82.2",
     "winston": "^3.8.2"
