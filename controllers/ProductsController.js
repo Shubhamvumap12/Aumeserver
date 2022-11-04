@@ -34,11 +34,15 @@ const getProduct = async (req, res) => {
 }
 const getProducts = async (req, res) => {
   try {
+
+    // await Product.updateMany({}, {$set:{property_type: "Residential"}})
     console.log(req.body);
     let filters = [];
     console.log(typeof req.body.filter.price)
+    const price = req.body.filter.price || "10000000"
     Object.keys(req.body.filter).map((key)=>{
-      if(typeof req.body.filter[key]!== 'string' && req.body.filter[key].length > 0)
+      console.log(key, typeof req.body.filter[key])
+      if(typeof req.body.filter[key]!== "string" && req.body.filter[key]!== null && req.body.filter[key].length > 0)
       filters.push( {[key] : {$in: req.body.filter[key]}} )
     })
    
@@ -48,10 +52,10 @@ const getProducts = async (req, res) => {
     if (filters.length == 0) {
       filters = [{ own_type: { $in: ["Buy", "Rent"] } }];
     }
-    filters.push({price: {$lte: req.body.filter.price}})
+    filters.push({price: {$lte: price}})
 
     const sort = req.body.sort;
-    console.log({filters});
+    console.log(JSON.stringify(filters));
 
     
     // await Product.updateMany({}, {$set: {property_type : 'residential'}})
