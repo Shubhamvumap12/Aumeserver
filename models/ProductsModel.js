@@ -60,7 +60,7 @@ const productSchema = new mongoose.Schema(
         type:String,        
     },
     super_area:{
-        type:String,        
+        type:Number,        
     },
     property_type:{
         type:String,        
@@ -84,7 +84,7 @@ const productSchema = new mongoose.Schema(
         type:String,        
     },
     plot_area:{
-        type:String,
+        type:Number,
     },
     face_direction:{
         type:String,

@@ -35,14 +35,21 @@ const getProduct = async (req, res) => {
 const getProducts = async (req, res) => {
   try {
 
-    // await Product.updateMany({}, {$set:{property_type: "Residential"}})
+    // await Product.updateMany({}, {$set:{plot_area: 100}})
     console.log(req.body);
     let filters = [];
-    console.log(typeof req.body.filter.price)
-    const price = req.body.filter.price || "10000000"
+    console.log(typeof req.body.filter.minPrice)
+    const minPrice = req.body.filter.minPrice || 2000000
+    const maxPrice = req.body.filter.maxPrice || 50000000
+    const minPlotArea = req.body.filter.minPlotArea || 0
+    const maxPlotArea = req.body.filter.maxPlotArea || 200
+    const minFloors = req.body.filter.minFloors || 1
+    const maxFloors = req.body.filter.maxFloors || 5
+
+
     Object.keys(req.body.filter).map((key)=>{
       console.log(key, typeof req.body.filter[key])
-      if(typeof req.body.filter[key]!== "string" && req.body.filter[key]!== null && req.body.filter[key].length > 0)
+      if(typeof req.body.filter[key] === "object" && req.body.filter[key]!== null && req.body.filter[key].length > 0)
       filters.push( {[key] : {$in: req.body.filter[key]}} )
     })
    
@@ -52,14 +59,16 @@ const getProducts = async (req, res) => {
     if (filters.length == 0) {
       filters = [{ own_type: { $in: ["Buy", "Rent"] } }];
     }
-    filters.push({price: {$lte: price}})
+    filters.push({price: {$lte: maxPrice, $gte: minPrice}})
+    filters.push({plot_area: {$lte: maxPlotArea, $gte: minPlotArea}})
+    filters.push({floors: {$lte: maxFloors, $gte: minFloors }})
 
     const sort = req.body.sort;
-    console.log(JSON.stringify(filters));
+    console.log((filters));
 
     
     // await Product.updateMany({}, {$set: {property_type : 'residential'}})
-    let ProductsData = await Product.find({$and: filters}).sort(sort);
+    let ProductsData = await Product.find().sort(sort);
     return res.status(200).send(ProductsData);
   } catch (err) {
     console.log(err.message);
